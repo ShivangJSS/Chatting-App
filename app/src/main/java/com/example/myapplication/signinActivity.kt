@@ -1,13 +1,15 @@
 package com.example.myapplication
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
-import kotlin.math.sign
 
 
 private lateinit var edtEmail: EditText;
@@ -16,17 +18,26 @@ private lateinit var edtPassword: EditText;
 private lateinit var auth: FirebaseAuth ;
 private lateinit var signin:Button;
 private lateinit var signup: Button;
+private lateinit var google:Button
 
 class signinActivity : AppCompatActivity() {
+
+    private lateinit var googleSignInClient:GoogleSignInClient
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.signin)
-
         edtEmail=findViewById(R.id.edtEmail)
         edtPassword=findViewById(R.id.edtPassword)
         signin=findViewById(R.id.signin)
         signup=findViewById(R.id.signup)
 
+
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken("YOUR_WEB_CLIENT_ID") // Use the web client ID from the Google Cloud Console
+            .requestEmail()
+            .build()
+
+        val googleSignInClient = GoogleSignIn.getClient(this, gso)
 
         //initialise firebase
 
@@ -60,6 +71,10 @@ class signinActivity : AppCompatActivity() {
         signup.setOnClickListener {
             val intent=Intent(this,SignupActivity::class.java)
             startActivity(intent)
+        }
+        google.setOnClickListener {
+            val signInIntent = googleSignInClient.signInIntent
+            startActivity(signInIntent)
         }
     }
 }
